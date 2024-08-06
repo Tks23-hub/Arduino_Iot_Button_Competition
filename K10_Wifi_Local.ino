@@ -25,3 +25,32 @@ void wifiSetup() {
 void wifi_loop() {
   server.handleClient();
 }
+
+
+void handleRoot() {
+  String html;
+  html = "<html><body>";
+    html += "<h1>Last 10 Button Presses</h1><table border='1'><tr><th>Index</th><th>Duration (ms)</th><th>Shortest</th></tr>";
+    for (int i = 0; i < 10; i++) {
+      html += "<tr><td>" + String(i + 1) + "</td><td>" + String(pressTimes[i]) + "</td><td>" + (pressTimes[i] == shortestPress ? "Yes" : "No") + "</td></tr>";
+    }
+    html += "</table>";
+  html += "<h1>Shortest Button Press </h1>";
+  html += "<p>Shortest Press: " + String(shortestPress) + " ms</p>";
+  html += "</body></html>";
+  server.send(200, "text/html", html);
+}
+void handleNotFound() {
+  String message = "File Not Found\n\n";
+  message += "URI: ";
+  message += server.uri();
+  message += "\nMethod: ";
+  message += (server.method() == HTTP_GET) ? "GET" : "POST";
+  message += "\nArguments: ";
+  message += server.args();
+  message += "\n";
+  for (uint8_t i = 0; i < server.args(); i++) {
+    message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
+  }
+  server.send(404, "text/plain", message);
+}
