@@ -21,5 +21,8 @@ void setup() {
   pinMode(performanceModePin, INPUT_PULLUP);
   LastPressTime = millis();
   lastVal = digitalRead(BtnPin);
+  SettingUpLeds();
+  wifiClient_Setup(); 
+  SendData(shortestPress);
    
 }
