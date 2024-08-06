@@ -15,6 +15,7 @@ unsigned long shortestPress = 0xFFF; //  a high value
 int cnt = 0;
 int wifiCnt=0;
 
+
 void setup() {
   Serial.begin(9600);
   pinMode(BtnPin, INPUT_PULLUP);
@@ -29,6 +30,17 @@ void setup() {
 
 
 void loop() {
+  // We cant switch mode in the setup because then we have to rerun the code and the 
+  // btn press array will be empty so we do it in the loop and we make sure its not an
+  // endless loop 
+if (digitalRead(performanceModePin) == LOW && wifiCnt==0 ) {
+        wifiSetup();
+        wifiCnt++;
+   }
+   else if (digitalRead(performanceModePin) == HIGH && wifiCnt>0){
+    wifiClient_Setup(); 
+    wifiCnt=0;
+   }
 
   int val = digitalRead(BtnPin);
   if (val == LOW && lastVal == HIGH && (millis() - LastPressTime > 50)) {
