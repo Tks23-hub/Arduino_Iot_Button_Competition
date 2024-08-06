@@ -54,3 +54,7 @@ void handleNotFound() {
   }
   server.send(404, "text/plain", message);
 }
+void updatePressDurations(unsigned long duration) {
+  pressTimes[PressTimesTracker] = duration;
+  PressTimesTracker = (PressTimesTracker + 1) % 10; 
+}
