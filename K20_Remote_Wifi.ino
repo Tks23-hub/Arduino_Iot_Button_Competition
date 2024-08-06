@@ -33,4 +33,24 @@ void wifiClient_Setup() {
   
   http.end();
 }
+ unsigned long GetData() {
+  HTTPClient http;
+  String dataURL = "http://api.kits4.me/GEN/api.php?ACT=GET&DEV=1121&CH=1";
  
+  http.begin(client, dataURL);
+  
+  int httpCode = http.GET();
+  if (httpCode > 0) {
+    Serial.println("HTTP Code: " + String(httpCode));
+    String payload = http.getString();
+    Serial.println(payload.toInt());
+        if (payload.length() > 0) {
+      return payload.toInt();
+    }
+  } else {
+    Serial.println("HTTP request failed,  GET : " + String(httpCode));
+  }
+  
+  http.end();
+  return 0xFFF; 
+}
