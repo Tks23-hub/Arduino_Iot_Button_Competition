@@ -26,3 +26,37 @@ void setup() {
   SendData(shortestPress);
    
 }
+
+
+void loop() {
+
+  int val = digitalRead(BtnPin);
+  if (val == LOW && lastVal == HIGH && (millis() - LastPressTime > 50)) {
+    pressStartTime = millis();
+    LastPressTime = millis();
+  } else if (val == HIGH && lastVal == LOW && (millis() - LastPressTime > 50)) {
+    pressDuration = millis() - pressStartTime;
+    pressTimes[PressTimesTracker] = pressDuration;
+    PressTimesTracker = (PressTimesTracker + 1) % 10; // so we don't get out of the array borders
+    lastPressDuration = pressDuration;
+    cnt++;
+
+      unsigned long serverShortestPress = GetData();
+      Serial.println(serverShortestPress);
+    if (serverShortestPress == 0) { // If the server had no data 
+      SendData(pressDuration);
+      shortestPress = pressDuration;
+      TurnOnAndOFFTurquoise();
+    } else {
+      if (pressDuration < serverShortestPress) {
+        shortestPress = pressDuration;
+        SendData(shortestPress); 
+        TurnOnAndOFFTurquoise();
+      } else {
+        TurnOnAndOFFBrown();
+      }
+    }
+  }
+  lastVal = val;
+  wifi_loop();
+}
